@@ -11,7 +11,7 @@
 | Lab | Focus | Status |
 |-----|-------|--------|
 | [Day 01 — Wazuh SIEM + Windows Endpoint](#day-01-proxmox-wazuh-siem-and-windows-endpoint-setup) | Infrastructure, SIEM deployment, agent onboarding | ✅ Complete |
-| Day 02 — Sysmon + Detection Rules | Detection engineering, MITRE ATT&CK mapping | 🔄 In progress |
+| [Day 02 — Sysmon + Detection Validation](04_windows_endpoint_telemetry/Day_02_Sysmon_Telemetry_and_Detection.md) | Detection engineering, MITRE ATT&CK mapping, Incident Response | ✅ Complete |
 
 ---
 
