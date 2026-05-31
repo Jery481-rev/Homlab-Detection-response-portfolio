@@ -9,9 +9,12 @@
 ## Lab Index
 
 | Lab | Focus | Status |
-|-----|-------|--------|
-| [Day 01 — Wazuh SIEM + Windows Endpoint](#day-01-proxmox-wazuh-siem-and-windows-endpoint-setup) | Infrastructure, SIEM deployment, agent onboarding | ✅ Complete |
-| [Day 02 — Sysmon + Detection Validation](04_windows_endpoint_telemetry/Day_02_Sysmon_Telemetry_and_Detection.md) | Detection engineering, MITRE ATT&CK mapping, Incident Response | ✅ Complete |
+|------|------|------|
+| [Day 01 — Proxmox, Wazuh, Windows Endpoint Deployment](02_proxmox_build/Day_01_Proxmox_Wazuh_Windows_Endpoint.md) | Infrastructure, SIEM Deployment | ✅ Complete |
+| [Day 02 — Sysmon + Detection Validation](04_windows_endpoint_telemetry/Day_02_Sysmon_Telemetry_and_Detection.md) | Detection Engineering, MITRE ATT&CK Mapping, Incident Response | ✅ Complete |
+| [IR-002 — Failed Login Investigation](07_incident_reports/IR-002_Failed_Login_Investigation.md) | Credential Access, Brute Force Detection | ✅ Complete |
+| [IR-003 — Local Administrator Creation](07_incident_reports/IR-003_Local_Admin_Creation.md) | Persistence, Privilege Escalation | ✅ Complete |
+| [IR-004 — PowerShell Reconnaissance](07_incident_reports/IR-004_PowerShell_Reconnaissance_Investigation.md) | Discovery, PowerShell Monitoring, Threat Hunting | ✅ Complete |
 
 ---
 
@@ -268,6 +271,22 @@ Confirmed Windows endpoint activity appeared in the dashboard.
 14. Network troubleshooting
 15. SIEM event validation
 16. Threat Hunting dashboard review
+
+### Security Operations
+
+- Wazuh SIEM
+- Sysmon
+- Threat Hunting
+- Alert Investigation
+- Incident Reporting
+- MITRE ATT&CK Mapping
+
+### Detection Use Cases
+
+- Failed Authentication Monitoring
+- Local Administrator Creation Detection
+- PowerShell Activity Monitoring
+- Discovery Activity Detection
 
 ## Issues Resolved
 
