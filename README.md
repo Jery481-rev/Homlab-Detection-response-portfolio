@@ -46,7 +46,7 @@ Home Router
 | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ | ---------- |
 | [IR-002 - Failed Login Investigation](07_incident_reports/IR-002_Failed_Login_Investigation.md)                           | Credential Access, Brute Force Detection         | ✅ Complete |
 | [IR-003 - Local Administrator Creation](07_incident_reports/IR-003_Local_Admin_Creation.md)                               | Persistence, Privilege Escalation                | ✅ Complete |
-| [IR-004 - PowerShell Reconnaissance Investigation](07_incident_reports/IR-004_PowerShell_Reconnaissance_Investigation.md) | Discovery, PowerShell Monitoring, Threat Hunting | ✅ Complete |
+| [IR-004 - PowerShell Reconnaissance Investigation](07_incident_reports/IR-004_PowerShell_Reconnaissance.md) | Discovery, PowerShell Monitoring, Threat Hunting | ✅ Complete |
 
 ## Latest Achievements
 
