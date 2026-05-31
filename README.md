@@ -1,16 +1,46 @@
-﻿# Detection and Response Portfolio
+# Homelab Detection and Response Portfolio
 
-## About
+> Hands-on blue team homelab built from bare metal. Each lab documents the full process — infrastructure, deployment, troubleshooting, and detection engineering.
 
-This repository documents my practical detection and response homelab work.
+**GitHub:** [Jery481-rev](https://github.com/Jery481-rev) | **Repo:** [Homlab-Detection-response-portfolio](https://github.com/Jery481-rev/Homlab-Detection-response-portfolio)
 
-I currently work as an IT Support Engineer in a Microsoft focused environment. I am building deeper security operations skills through SIEM deployment, endpoint telemetry, log analysis, threat hunting, custom detection logic, MITRE ATT&CK mapping, incident documentation, and response playbooks.
+---
 
-## Current Lab Environment
+## Lab Index
 
-The lab runs on a dedicated Lenovo ThinkCentre M710q Mini using Proxmox VE.
+| Lab | Focus | Status |
+|-----|-------|--------|
+| [Day 01 — Wazuh SIEM + Windows Endpoint](#day-01-proxmox-wazuh-siem-and-windows-endpoint-setup) | Infrastructure, SIEM deployment, agent onboarding | ✅ Complete |
+| Day 02 — Sysmon + Detection Rules | Detection engineering, MITRE ATT&CK mapping | 🔄 In progress |
 
-### Hardware
+---
+
+## Current Lab State
+
+| Component | Status |
+|-----------|--------|
+| Proxmox Host | ✅ Running |
+| Ubuntu Server (wazuh_server) | ✅ Running |
+| Wazuh SIEM | ✅ Running |
+| Windows 11 Endpoint (win_endpoint_01) | ✅ Running |
+| Wazuh Agent | ✅ Active |
+| Event Collection | ✅ Validated |
+| Threat Hunting | ✅ Validated |
+| Sysmon | ⬜ Pending |
+| Custom Detection Rules | ⬜ Pending |
+| MITRE ATT&CK Mapping | ⬜ Pending |
+
+---
+
+## Day 01, Proxmox, Wazuh SIEM, and Windows Endpoint Setup
+
+## Objective
+
+Build the first stage of a practical detection and response homelab.
+
+The goal was to deploy a dedicated virtualisation host, install Wazuh SIEM, create a Windows 11 endpoint, connect the endpoint to Wazuh, and confirm security events appear in the Wazuh Threat Hunting dashboard.
+
+## Hardware
 
 Lenovo ThinkCentre M710q Mini
 
@@ -20,88 +50,275 @@ Intel Core i5 7400T
 
 256 GB SSD
 
-### Current Architecture
+Dedicated Ethernet connection to home router
 
-Home router
+## Architecture
 
-Lenovo ThinkCentre running Proxmox VE
+```
+Home Router
+    │
+    └── Proxmox VE Host (Lenovo ThinkCentre M710q)
+            │
+            ├── VM 100 — Ubuntu Server 24.04 LTS (wazuh_server)
+            │       ├── Wazuh Manager
+            │       ├── Wazuh Indexer
+            │       └── Wazuh Dashboard
+            │
+            └── VM 101 — Windows 11 Pro (win_endpoint_01)
+                    └── Wazuh Agent ──► reports to wazuh_server
+```
 
-Ubuntu Server 24.04 LTS VM running Wazuh SIEM
+## Phase 1, Proxmox Installation
 
-Windows 11 Pro VM running the Wazuh endpoint agent
+Installed Proxmox VE on the Lenovo ThinkCentre using a bootable USB installer.
 
-### Current Components
+### BIOS Configuration
 
-1. Proxmox VE host
-2. Ubuntu Server 24.04 LTS
-3. Wazuh manager
-4. Wazuh indexer
-5. Wazuh dashboard
-6. Windows 11 Pro endpoint
-7. Wazuh Windows agent
-8. Windows security event collection
-9. Wazuh Threat Hunting event validation
+The first installation attempt returned a KVM virtualisation warning.
 
-## Completed Work
+Cause:
 
-1. Installed Proxmox VE on dedicated hardware
-2. Enabled Intel Virtualization Technology in BIOS
-3. Configured Proxmox networking
-4. Created Ubuntu Server VM
-5. Installed Wazuh SIEM
-6. Created Windows 11 Pro endpoint VM
-7. Installed VirtIO storage and network drivers
-8. Installed and enrolled the Wazuh Windows agent
-9. Confirmed Windows endpoint events appear in Wazuh Threat Hunting
+Intel Virtualization Technology was disabled in BIOS.
 
-## In Progress
+Resolution:
 
-1. Install Sysmon on the Windows endpoint
-2. Collect Sysmon Operational events in Wazuh
-3. Generate controlled Windows activity
-4. Create the first custom detection rule
+Enabled Intel Virtualization Technology in Lenovo BIOS.
 
-## Planned Detections
+### Network Configuration
 
-1. Multiple failed Windows logons
-2. Suspicious PowerShell execution
-3. New local administrator activity
-4. Repeated SSH failed logins
-5. Suspicious web server activity
+Configured Proxmox networking and confirmed access through the web dashboard.
 
-## Planned Portfolio Work
+Management interface:
 
-1. Add Linux endpoint monitoring
-2. Add Sysmon telemetry
-3. Write threat hunting notes
-4. Write incident reports
-5. Write response playbooks
-6. Map detections to MITRE ATT&CK
-7. Add Microsoft Sentinel detections
-8. Add Entra ID identity security projects
+vmbr0
 
-## Target Roles
+Physical adapter:
 
-1. Junior Detection and Response Engineer
-2. SOC Analyst
-3. Cyber Security Analyst
-4. Junior Detection Engineer
-5. Security Operations Analyst
+enp0s31f6
+
+The Proxmox host was connected directly to the home router for stable network access.
+
+## Phase 2, Wazuh Server Deployment
+
+Uploaded the Ubuntu Server 24.04 LTS ISO to Proxmox.
+
+Created an Ubuntu Server VM with:
+
+VM ID: 100
+
+VM name: wazuh_server
+
+CPU: 4 virtual cores
+
+Memory: 8192 MB
+
+Disk: 70 GB
+
+Network adapter: VirtIO
+
+Network bridge: vmbr0
+
+### Storage Planning
+
+Adjusted the Ubuntu logical volume during installation.
+
+Final layout:
+
+Root filesystem: 62 GB
+
+Boot partition: 2 GB
+
+Free LVM reserve: about 6 GB
+
+This gives the Wazuh indexer enough usable storage for a small lab.
+
+### Ubuntu Setup
+
+Configured:
+
+Hostname: wazuh_server
+
+Username: jerin
+
+SSH access: enabled
+
+### Wazuh Installation
+
+Installed the Wazuh all in one stack.
+
+Components:
+
+1. Wazuh manager
+2. Wazuh indexer
+3. Wazuh dashboard
+
+Saved the Wazuh dashboard credentials in a private password manager.
+
+## Phase 3, Windows Endpoint Deployment
+
+Created a Windows 11 Pro VM with:
+
+VM ID: 101
+
+VM name: win_endpoint_01
+
+CPU: 2 virtual cores
+
+Memory: 4096 MB
+
+Disk: 55 GB
+
+BIOS: OVMF UEFI
+
+TPM: version 2.0
+
+Machine type: q35
+
+Disk controller: VirtIO SCSI
+
+Network adapter: VirtIO
+
+Network bridge: vmbr0
+
+### VirtIO Driver Installation
+
+Windows Setup did not initially detect the virtual disk.
+
+Cause:
+
+The VirtIO SCSI storage driver was not available in the Windows installer.
+
+Resolution:
+
+Attached the VirtIO ISO as a second virtual CD drive.
+
+Loaded the driver from:
+
+vioscsi
+
+w11
+
+amd64
+
+Installed the remaining VirtIO guest tools after Windows Setup completed.
+
+## Phase 4, Wazuh Agent Enrollment
+
+Installed the Wazuh Windows agent.
+
+The first enrollment attempt failed.
+
+### Troubleshooting
+
+Reviewed the endpoint agent log:
+
+C:\Program Files (x86)\ossec_agent\ossec.log
+
+The Windows agent was pointing to the wrong Wazuh manager address.
+
+Confirmed the correct Wazuh server address from Ubuntu.
+
+Updated the Windows agent configuration.
+
+Restarted the Wazuh agent service.
+
+Confirmed successful enrollment.
+
+### Final Status
+
+Agent name: win_endpoint_01
+
+Agent status: Active
+
+## Phase 5, Event Validation
+
+Opened the Wazuh dashboard.
+
+Navigated to:
+
+Agents management
+
+Summary
+
+Confirmed the Windows endpoint appeared as active.
+
+Navigated to:
+
+Threat Hunting
+
+Events
+
+Confirmed Windows endpoint activity appeared in the dashboard.
 
 ## Skills Demonstrated
 
-1. Virtualisation
-2. SIEM deployment
-3. Endpoint onboarding
-4. Windows event collection
-5. Network troubleshooting
-6. Agent enrollment troubleshooting
-7. Threat Hunting event review
-8. Technical documentation
-9. Detection engineering fundamentals
+1. Bare metal Proxmox VE deployment
+2. BIOS virtualisation troubleshooting
+3. Proxmox networking
+4. Linux bridge configuration
+5. Ubuntu Server VM deployment
+6. Linux LVM storage planning
+7. Wazuh SIEM deployment
+8. Windows 11 Pro VM deployment
+9. VirtIO storage driver installation
+10. VirtIO network driver installation
+11. Wazuh agent installation
+12. Wazuh agent enrollment
+13. Endpoint log review
+14. Network troubleshooting
+15. SIEM event validation
+16. Threat Hunting dashboard review
 
-## Security and Privacy
+## Issues Resolved
 
-All screenshots are reviewed before upload.
+### Issue 1, KVM Virtualisation Warning
 
-Passwords, recovery keys, MAC addresses, email addresses, and sensitive configuration details are removed or blurred.
+Cause:
+
+Intel Virtualization Technology was disabled.
+
+Resolution:
+
+Enabled the BIOS setting.
+
+### Issue 2, Unsupported Ubuntu Version
+
+Cause:
+
+The first Ubuntu VM used Ubuntu 26.04.
+
+Resolution:
+
+Rebuilt the VM using Ubuntu Server 24.04 LTS.
+
+### Issue 3, Windows Installer Could Not See Disk
+
+Cause:
+
+VirtIO SCSI driver was missing.
+
+Resolution:
+
+Attached the VirtIO ISO and loaded the storage driver.
+
+### Issue 4, Wazuh Agent Enrollment Failed
+
+Cause:
+
+The endpoint agent pointed to the wrong manager address.
+
+Resolution:
+
+Reviewed the agent log, corrected the Wazuh server address, restarted the agent service, and confirmed successful enrollment.
+
+## Next Steps
+
+1. Install Sysmon
+2. Configure Wazuh Sysmon collection
+3. Generate test activity
+4. Validate Sysmon events in Threat Hunting
+5. Create failed Windows logon detection
+6. Create suspicious PowerShell detection
+7. Create local administrator activity detection
+8. Add MITRE ATT&CK mapping
+9. Add screenshots
